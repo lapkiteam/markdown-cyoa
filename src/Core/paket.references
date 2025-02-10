@@ -3,3 +3,4 @@ group Core
   FSharpMyExt
   FUniversalParser
   Farkdown
+  FMermaid.Core
