@@ -7,6 +7,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Types.fs" />
+    <Compile Include="Parser/Action.fs" />
+    <Compile Include="Parser/Paragraph.fs" />
+    <Compile Include="Parser/Document.fs" />
   </ItemGroup>
   <Import Project="..\..\.paket\Paket.Restore.targets" />
 </Project>
