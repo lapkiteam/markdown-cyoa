@@ -18,7 +18,7 @@ let parseTest =
                 ]))
                 (Ok [
                     {
-                        Id = ""
+                        Id = "first-paragraph"
                         Title = [ text "first paragraph" ]
                         Main = [
                             p [[ text "some text" ]]

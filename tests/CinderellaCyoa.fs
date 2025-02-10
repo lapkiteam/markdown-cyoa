@@ -22,7 +22,7 @@ let rawBegin =
 
 let parsedBegin =
     {
-        Id = ""
+        Id = "begin"
         Title = [ text "Begin" ]
         Main = [
             p [[
@@ -72,7 +72,7 @@ let rawSweepFloors =
 
 let parsedSweepFloors =
     {
-        Id = ""
+        Id = "sweep-floors"
         Title = [ text "Sweep Floors" ]
         Main = [
             p [[
@@ -115,7 +115,7 @@ let rawMendDresses =
 
 let parsedMendDresses =
     {
-        Id = ""
+        Id = "mend-dresses"
         Title = [ text "Mend Dresses" ]
         Main = [
             p [[
