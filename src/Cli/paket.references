@@ -1,4 +1,6 @@
-FSharp.Core
-FSharpMyExt
-FUniversalParser
-Farkdown
+group Cli
+  FSharp.Core
+  FSharpMyExt
+  FUniversalParser
+  Farkdown
+  Argu

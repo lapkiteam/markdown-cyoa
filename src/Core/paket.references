@@ -1,4 +1,5 @@
-FSharp.Core
-FSharpMyExt
-FUniversalParser
-Farkdown
+group Core
+  FSharp.Core
+  FSharpMyExt
+  FUniversalParser
+  Farkdown

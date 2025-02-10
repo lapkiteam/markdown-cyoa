@@ -1,3 +1,6 @@
+
+
+GROUP Cli
 STORAGE: NONE
 STRATEGY: MIN
 RESTRICTION: == net6.0
@@ -46,6 +49,50 @@ NUGET
       YamlDotNet (>= 8.1.2)
     FUniversalParser (0.6.0)
       FSharpMyExt (>= 2.0.0-prerelease.4)
+
+GROUP Core
+STORAGE: NONE
+STRATEGY: MIN
+RESTRICTION: == net6.0
+NUGET
+  remote: https://gitlab.com/api/v4/projects/28574921/packages/nuget/index.json
+    Farkdown (0.5.0)
+      FParsec (>= 1.1.1)
+      FSharp.Core (>= 5.0.1)
+      FSharpMyExt (>= 2.0.0-prerelease.3)
+      FUniversalParser (>= 0.2)
+    FSharpMyExt (2.0.0-prerelease.4)
+      FParsec (>= 1.1.1)
+      FSharp.Core (>= 4.7.2)
+      Fuchu (>= 1.1)
+      HtmlAgilityPack (>= 1.11.24)
+      Newtonsoft.Json (>= 12.0.3)
+      Newtonsoft.Json.Bson (>= 1.0.2)
+      System.Drawing.Common (>= 4.7)
+      TextCopy (>= 4.2)
+      YamlDotNet (>= 8.1.2)
+    FUniversalParser (0.6.0)
+      FSharpMyExt (>= 2.0.0-prerelease.4)
+  remote: https://api.nuget.org/v3/index.json
+    FParsec (1.1.1)
+      FSharp.Core (>= 4.3.4)
+    FSharp.Core (6.0)
+    Fuchu (1.1)
+      FSharp.Core (>= 4.3.4)
+    HtmlAgilityPack (1.11.24)
+    Microsoft.Extensions.DependencyInjection.Abstractions (3.1.4)
+    Microsoft.NETCore.Platforms (3.1)
+    Microsoft.Win32.SystemEvents (4.7)
+      Microsoft.NETCore.Platforms (>= 3.1)
+    Newtonsoft.Json (12.0.3)
+    Newtonsoft.Json.Bson (1.0.2)
+      Newtonsoft.Json (>= 12.0.1)
+    System.Drawing.Common (4.7)
+      Microsoft.NETCore.Platforms (>= 3.1)
+      Microsoft.Win32.SystemEvents (>= 4.7)
+    TextCopy (4.2)
+      Microsoft.Extensions.DependencyInjection.Abstractions (>= 3.1.4)
+    YamlDotNet (8.1.2)
 
 GROUP Tests
 STORAGE: NONE
