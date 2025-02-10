@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Cli", "src\Cli.fsproj", "{3C7E98BB-C0F9-41A3-BCED-03470A2A6447}"
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Cli", "src\Cli\Cli.fsproj", "{3C7E98BB-C0F9-41A3-BCED-03470A2A6447}"
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Tests", "tests\Tests.fsproj", "{ADC9946C-B840-42B9-B9D7-F9E0C00F3E44}"
 EndProject

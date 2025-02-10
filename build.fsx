@@ -24,13 +24,14 @@ Target.initEnvironment ()
 // --------------------------------------------------------------------------------------
 // Build variables
 // --------------------------------------------------------------------------------------
-let mainProjPath = "src/Cli.fsproj"
-let mainProjDir = Path.getDirectory mainProjPath
+let cliProjectPath = "src/Cli/Cli.fsproj"
+let cliProjectDirectory = Path.getDirectory cliProjectPath
 
 let testProjPath = "tests/Tests.fsproj"
 let testsProjDir = Path.getDirectory testProjPath
 
 let deployDir = Path.getFullName "./deploy"
+let cliDeployDirectory = sprintf "%s/Cli" deployDir
 
 let releasePath = "RELEASE_NOTES.md"
 // --------------------------------------------------------------------------------------
@@ -48,23 +49,28 @@ module XmlText =
         let node = doc.CreateElement("root")
         node.InnerText <- rawText
         node.InnerXml
+
+let cleanBinAndObj projectPath =
+    try
+        Shell.cleanDirs [
+            projectPath </> "bin"
+            projectPath </> "obj"
+        ]
+    with _ -> ()
 // --------------------------------------------------------------------------------------
 // Targets
 // --------------------------------------------------------------------------------------
+Target.create "CliClean" (fun _ ->
+    cleanBinAndObj cliProjectDirectory
+    Shell.cleanDir cliDeployDirectory
+)
+
 Target.create "Clean" (fun _ ->
-    let cleanBinAndObj projectPath =
-        try
-            Shell.cleanDirs [
-                projectPath </> "bin"
-                projectPath </> "obj"
-            ]
-        with _ -> ()
-    cleanBinAndObj mainProjDir
     cleanBinAndObj testsProjDir
     Shell.cleanDir deployDir
 )
 
-Target.create "Meta" (fun _ ->
+Target.create "CliMeta" (fun _ ->
     let release = ReleaseNotes.load releasePath
 
     [
@@ -90,23 +96,23 @@ Target.create "Meta" (fun _ ->
 
 let commonBuildArgs = "-c Release"
 
-Target.create "Build" (fun _ ->
-    mainProjDir
+Target.create "CliBuild" (fun _ ->
+    cliProjectDirectory
     |> dotnet (sprintf "build %s" commonBuildArgs)
 )
 
-Target.create "Deploy" (fun _ ->
-    mainProjDir
-    |> dotnet (sprintf "build %s -o \"%s\"" commonBuildArgs deployDir)
+Target.create "CliDeploy" (fun _ ->
+    cliProjectDirectory
+    |> dotnet (sprintf "build %s -o \"%s\"" commonBuildArgs cliDeployDirectory)
 )
 
-Target.create "Pack" (fun _ ->
-    mainProjDir
-    |> dotnet (sprintf "pack %s -o \"%s\"" commonBuildArgs deployDir)
+Target.create "CliPack" (fun _ ->
+    cliProjectDirectory
+    |> dotnet (sprintf "pack %s -o \"%s\"" commonBuildArgs cliDeployDirectory)
 )
 
-Target.create "PushToGitlab" (fun _ ->
-    let packPathPattern = sprintf "%s/*.nupkg" deployDir
+Target.create "CliPushToGitlab" (fun _ ->
+    let packPathPattern = sprintf "%s/*.nupkg" cliDeployDirectory
     let packPath =
         !! packPathPattern |> Seq.tryExactlyOne
         |> Option.defaultWith (fun () -> failwithf "'%s' not found" packPathPattern)
@@ -127,14 +133,14 @@ open Fake.Core.TargetOperators
 
 "Build"
 
-"Clean"
-  ==> "Deploy"
+"CliClean"
+  ==> "CliDeploy"
 
-"Clean"
-  ==> "Meta"
-  ==> "Pack"
-  ==> "PushToGitlab"
+"CliClean"
+  ==> "CliMeta"
+  ==> "CliPack"
+  ==> "CliPushToGitlab"
 
 "TestsRun"
 
-Target.runOrDefault "Deploy"
+Target.runOrDefault "CliDeploy"
