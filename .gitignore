@@ -2,5 +2,6 @@ bin
 obj
 /paket-files
 /.fake
-/Directory.Build.props
+/src/Core/Directory.Build.props
+/src/Cli/Directory.Build.props
 /deploy

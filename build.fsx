@@ -24,16 +24,22 @@ Target.initEnvironment ()
 // --------------------------------------------------------------------------------------
 // Build variables
 // --------------------------------------------------------------------------------------
+let deployDir = Path.getFullName "./deploy"
+
+let coreProjectPath = "src/Core/Core.fsproj"
+let coreProjectDirectory = Path.getDirectory coreProjectPath
+let coreDeployDirectory = deployDir </> "Core"
+let coreReleasePath = coreProjectDirectory </> "RELEASE_NOTES.md"
+
 let cliProjectPath = "src/Cli/Cli.fsproj"
 let cliProjectDirectory = Path.getDirectory cliProjectPath
+let cliDeployDirectory = sprintf "%s/Cli" deployDir
+let releasePath = "RELEASE_NOTES.md"
 
 let testProjPath = "tests/Tests.fsproj"
 let testsProjDir = Path.getDirectory testProjPath
 
-let deployDir = Path.getFullName "./deploy"
-let cliDeployDirectory = sprintf "%s/Cli" deployDir
-
-let releasePath = "RELEASE_NOTES.md"
+let commonBuildArgs = "-c Release"
 // --------------------------------------------------------------------------------------
 // Helpers
 // --------------------------------------------------------------------------------------
@@ -60,15 +66,72 @@ let cleanBinAndObj projectPath =
 // --------------------------------------------------------------------------------------
 // Targets
 // --------------------------------------------------------------------------------------
+Target.create "Clean" (fun _ ->
+    cleanBinAndObj testsProjDir
+    Shell.cleanDir deployDir
+)
+
+Target.create "CoreClean" (fun _ ->
+    cleanBinAndObj coreProjectDirectory
+    Shell.cleanDir coreDeployDirectory
+)
+
+Target.create "CoreMeta" (fun _ ->
+    let release = ReleaseNotes.load coreReleasePath
+
+    [
+        "<Project xmlns=\"http://schemas.microsoft.com/developer/msbuild/2003\">"
+        "<ItemGroup>"
+        "    <PackageReference Include=\"Microsoft.SourceLink.GitHub\" Version=\"1.0.0\" PrivateAssets=\"All\"/>"
+        "</ItemGroup>"
+        "<PropertyGroup>"
+        "    <EmbedUntrackedSources>true</EmbedUntrackedSources>"
+        "    <PackageProjectUrl>https://github.com/lapkiteam/markdown-cyoa/tree/main/src/Core</PackageProjectUrl>"
+        "    <PackageLicenseExpression>MIT</PackageLicenseExpression>"
+        "    <RepositoryUrl>https://github.com/lapkiteam/markdown-cyoa.git</RepositoryUrl>"
+        sprintf "    <PackageReleaseNotes>%s</PackageReleaseNotes>"
+            (String.concat "\n" release.Notes |> XmlText.escape)
+        "    <PackageTags>cyoa;fsharp;markdown;library</PackageTags>"
+        "    <Authors>gretmn102</Authors>"
+        sprintf "    <Version>%s</Version>" (string release.SemVer)
+        "</PropertyGroup>"
+        "</Project>"
+    ]
+    |> File.write false (
+        coreProjectDirectory </> "Directory.Build.props"
+    )
+)
+
+Target.create "CoreBuild" (fun _ ->
+    coreProjectDirectory
+    |> dotnet (sprintf "build %s" commonBuildArgs)
+)
+
+Target.create "CoreDeploy" (fun _ ->
+    coreProjectDirectory
+    |> dotnet (sprintf "build %s -o \"%s\"" commonBuildArgs coreDeployDirectory)
+)
+
+Target.create "CorePack" (fun _ ->
+    coreProjectDirectory
+    |> dotnet (sprintf "pack %s -o \"%s\"" commonBuildArgs coreDeployDirectory)
+)
+
+Target.create "CorePushToGitlab" (fun _ ->
+    let packPathPattern = sprintf "%s/*.nupkg" coreDeployDirectory
+    let packPath =
+        !! packPathPattern |> Seq.tryExactlyOne
+        |> Option.defaultWith (fun () -> failwithf "'%s' not found" packPathPattern)
+
+    deployDir
+    |> dotnet (sprintf "nuget push -s %s %s" "gitlab" packPath)
+)
+
 Target.create "CliClean" (fun _ ->
     cleanBinAndObj cliProjectDirectory
     Shell.cleanDir cliDeployDirectory
 )
 
-Target.create "Clean" (fun _ ->
-    cleanBinAndObj testsProjDir
-    Shell.cleanDir deployDir
-)
 
 Target.create "CliMeta" (fun _ ->
     let release = ReleaseNotes.load releasePath
@@ -80,21 +143,21 @@ Target.create "CliMeta" (fun _ ->
         "</ItemGroup>"
         "<PropertyGroup>"
         "    <EmbedUntrackedSources>true</EmbedUntrackedSources>"
-        "    <PackageProjectUrl>https://github.com/gretmn102/markdown-cyoa</PackageProjectUrl>"
+        "    <PackageProjectUrl>https://github.com/lapkiteam/markdown-cyoa/tree/main/src/Cli</PackageProjectUrl>"
         "    <PackageLicenseExpression>MIT</PackageLicenseExpression>"
-        "    <RepositoryUrl>https://github.com/gretmn102/markdown-cyoa.git</RepositoryUrl>"
+        "    <RepositoryUrl>https://github.com/lapkiteam/markdown-cyoa.git</RepositoryUrl>"
         sprintf "    <PackageReleaseNotes>%s</PackageReleaseNotes>"
             (String.concat "\n" release.Notes |> XmlText.escape)
-        "    <PackageTags>fsharp;markdown</PackageTags>"
+        "    <PackageTags>cyoa;fsharp;markdown;cli</PackageTags>"
         "    <Authors>gretmn102</Authors>"
         sprintf "    <Version>%s</Version>" (string release.SemVer)
         "</PropertyGroup>"
         "</Project>"
     ]
-    |> File.write false "Directory.Build.props"
+    |> File.write false (
+        cliProjectDirectory </> "Directory.Build.props"
+    )
 )
-
-let commonBuildArgs = "-c Release"
 
 Target.create "CliBuild" (fun _ ->
     cliProjectDirectory
@@ -140,6 +203,11 @@ open Fake.Core.TargetOperators
   ==> "CliMeta"
   ==> "CliPack"
   ==> "CliPushToGitlab"
+
+"CoreClean"
+  ==> "CoreMeta"
+  ==> "CorePack"
+  ==> "CorePushToGitlab"
 
 "TestsRun"
 
