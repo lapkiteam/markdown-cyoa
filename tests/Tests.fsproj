@@ -9,6 +9,7 @@
     <Compile Include="Parser/Action.Tests.fs" />
     <Compile Include="Parser/Paragraph.Tests.fs" />
     <Compile Include="Parser/Document.Tests.fs" />
+    <Compile Include="Mermaid.Tests.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
   <ItemGroup>
