@@ -8,6 +8,9 @@
     <ToolCommandName>markdown-cyoa</ToolCommandName>
   </PropertyGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Core\Core.fsproj" />
+  </ItemGroup>
+  <ItemGroup>
     <Compile Include="Program.fs" />
   </ItemGroup>
   <Import Project="..\..\.paket\Paket.Restore.targets" />

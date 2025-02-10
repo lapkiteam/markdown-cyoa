@@ -3,4 +3,5 @@ group Cli
   FSharpMyExt
   FUniversalParser
   Farkdown
+  FMermaid.Core
   Argu
