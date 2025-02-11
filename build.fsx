@@ -34,7 +34,7 @@ let coreReleasePath = coreProjectDirectory </> "RELEASE_NOTES.md"
 let cliProjectPath = "src/Cli/Cli.fsproj"
 let cliProjectDirectory = Path.getDirectory cliProjectPath
 let cliDeployDirectory = sprintf "%s/Cli" deployDir
-let releasePath = "RELEASE_NOTES.md"
+let cliReleasePath = cliProjectDirectory </> "RELEASE_NOTES.md"
 
 let testProjPath = "tests/Tests.fsproj"
 let testsProjDir = Path.getDirectory testProjPath
@@ -134,7 +134,7 @@ Target.create "CliClean" (fun _ ->
 
 
 Target.create "CliMeta" (fun _ ->
-    let release = ReleaseNotes.load releasePath
+    let release = ReleaseNotes.load cliReleasePath
 
     [
         "<Project xmlns=\"http://schemas.microsoft.com/developer/msbuild/2003\">"
