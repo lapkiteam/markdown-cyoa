@@ -18,7 +18,10 @@ type ToMermaidCliArguments =
 module ToMermaidCliArguments =
     let exec (results: ParseResults<ToMermaidCliArguments>) =
         let sourcePath = results.GetResult ToMermaidCliArguments.Source_Path
-        let source = System.IO.File.ReadAllText sourcePath
+        let source =
+            match sourcePath with
+            | "-" -> Clipboard.getText()
+            | _ -> System.IO.File.ReadAllText sourcePath
         Document.parse source
         |> Result.map (fun markdownCyoa ->
             Mermaid.toMermaid markdownCyoa
