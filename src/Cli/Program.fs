@@ -30,25 +30,56 @@ module ToMermaidCliArguments =
         )
 
 [<RequireQualifiedAccess>]
+type ToQspCliArguments =
+    | [<MainCommand; ExactlyOnce; Last>] Source_Path of path: string
+    interface IArgParserTemplate with
+        member s.Usage =
+            match s with
+            | Source_Path _ -> "path to a markdown cyoa document"
+
+[<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
+[<RequireQualifiedAccess>]
+module ToQspCliArguments =
+    open Qsp.Printer
+
+    let exec (results: ParseResults<ToQspCliArguments>) =
+        let sourcePath = results.GetResult ToQspCliArguments.Source_Path
+        let source = System.IO.File.ReadAllText sourcePath
+        Document.parse source
+        |> Result.map (fun markdownCyoa ->
+            Qsp.toQsp markdownCyoa
+            |> Ast.Document.print
+                (IndentsOption.UsingSpaces 2)
+                FormatConfig.Default
+        )
+
+[<RequireQualifiedAccess>]
 type CliArguments =
     | [<CliPrefix(CliPrefix.None)>] To_Mermaid of ParseResults<ToMermaidCliArguments>
+    | [<CliPrefix(CliPrefix.None)>] To_Qsp of ParseResults<ToQspCliArguments>
     interface IArgParserTemplate with
         member s.Usage =
             match s with
             | To_Mermaid _ -> "convert to mermaid"
+            | To_Qsp _ -> "convert to QSP"
 
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 [<RequireQualifiedAccess>]
 module CliArguments =
     let exec (results: ParseResults<CliArguments>) =
-        match results.GetSubCommand() with
-        | CliArguments.To_Mermaid results ->
-            match ToMermaidCliArguments.exec results with
-            | Ok str ->
-                printfn "%s" str
-            | Error errMsg ->
-                eprintfn "%s" errMsg
+        let result =
+            match results.GetSubCommand() with
+            | CliArguments.To_Mermaid results ->
+                ToMermaidCliArguments.exec results
+            | CliArguments.To_Qsp results ->
+                ToQspCliArguments.exec results
+        match result with
+        | Ok str ->
+            printfn "%s" str
             0
+        | Error errMsg ->
+            eprintfn "%s" errMsg
+            1
 
 [<EntryPoint>]
 let main args =
