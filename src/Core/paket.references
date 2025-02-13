@@ -4,3 +4,4 @@ group Core
   FUniversalParser
   Farkdown
   FMermaid.Core
+  Qsp.FSharp.Core

@@ -10,6 +10,7 @@ group Core
     nuget FUniversalParser >= 0.6.0 lowest_matching: true
     nuget Farkdown >= 0.5.0 lowest_matching: true
     nuget FMermaid.Core >= 0.2.0 lowest_matching: true
+    nuget Qsp.FSharp.Core >= 0.1.0 lowest_matching: true
 
 group Cli
     source https://api.nuget.org/v3/index.json
@@ -25,6 +26,7 @@ group Cli
     nuget FUniversalParser >= 0.6.0 lowest_matching: true
     nuget Farkdown >= 0.5.0 lowest_matching: true
     nuget FMermaid.Core >= 0.2.0 lowest_matching: true
+    nuget Qsp.FSharp.Core >= 0.1.0 lowest_matching: true
 
 group Tests
     source https://api.nuget.org/v3/index.json
@@ -40,3 +42,4 @@ group Tests
     nuget FUniversalParser >= 0.6.0 lowest_matching: true
     nuget Farkdown >= 0.5.0 lowest_matching: true
     nuget FMermaid.Core >= 0.2.0 lowest_matching: true
+    nuget Qsp.FSharp.Core >= 0.1.0 lowest_matching: true
