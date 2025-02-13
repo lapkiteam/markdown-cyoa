@@ -35,7 +35,7 @@ type ToQspCliArguments =
     interface IArgParserTemplate with
         member s.Usage =
             match s with
-            | Source_Path _ -> "path to a markdown cyoa document"
+            | Source_Path _ -> "path to a markdown cyoa document or - from stdin"
 
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 [<RequireQualifiedAccess>]
@@ -44,7 +44,10 @@ module ToQspCliArguments =
 
     let exec (results: ParseResults<ToQspCliArguments>) =
         let sourcePath = results.GetResult ToQspCliArguments.Source_Path
-        let source = System.IO.File.ReadAllText sourcePath
+        let source =
+            match sourcePath with
+            | "-" -> Clipboard.getText()
+            | _ -> System.IO.File.ReadAllText sourcePath
         Document.parse source
         |> Result.map (fun markdownCyoa ->
             Qsp.toQsp markdownCyoa
