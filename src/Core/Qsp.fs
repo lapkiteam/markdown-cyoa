@@ -3,8 +3,9 @@ open Qsp.Ast
 
 module LineKind =
     open Farkdown.SyntaxTree
+    open Qsp.Printer.Ast
 
-    let ofFarkdownLineElement (lineElement: Farkdown.SyntaxTree.LineElement) : LineKind =
+    let ofFarkdownLineElement ofFarkdownLine (lineElement: Farkdown.SyntaxTree.LineElement) : LineKind =
         match lineElement with
         | LineElement.Text text ->
             LineKind.StringKind text
@@ -19,11 +20,15 @@ module LineKind =
         | LineElement.Comment comment ->
             LineKind.StringKind $"<!-- {comment} -->"
         | LineElement.Link link ->
-            // todo: feat(core/qsp): make full a link description converter
-            let description: string =
-                match link.Description with
-                | [LineElement.Text text] -> text
-                | _ -> ""
+            let description =
+                let showStmtsInline posStatements =
+                    FsharpMyExtension.ShowList.empty // todo
+                let showExpr =
+                    Expr.Printer.showExpr showStmtsInline
+                let lines = ofFarkdownLine link.Description |> List.singleton
+                Value.Printer.showStringLines showExpr showStmtsInline lines
+                |> FsharpMyExtension.ShowList.lines
+                |> FsharpMyExtension.ShowList.show
             LineKind.StringKind
                 $"<a href=\"{link.Href}\" title=\"{link.Title}\">{description}</a>"
         | LineElement.Image image ->
@@ -31,9 +36,9 @@ module LineKind =
                 $"<img src=\"{image.Src}\" alt=\"{image.Alt}\" title=\"{image.Title}\" />"
 
 module Line =
-    let ofFarkdownLine (line: Farkdown.SyntaxTree.Line) : Line =
+    let rec ofFarkdownLine (line: Farkdown.SyntaxTree.Line) : Line =
         line
-        |> List.map LineKind.ofFarkdownLineElement
+        |> List.map (LineKind.ofFarkdownLineElement ofFarkdownLine)
 
 module Expr =
     let createSimpleString str =

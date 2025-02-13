@@ -6,6 +6,34 @@ open Qsp.Printer.Ast
 
 open MarkdownCyoa.Core.Tests
 
+module LineKind =
+    open LineKind
+    open Farkdown.Helpers
+
+    module Tests =
+        [<Tests>]
+        let ofFarkdownLineElementTest =
+            testList "MarkdownCyoa.Core.LineKind.ofFarkdownLineElement" [
+                testCase "link with image" <| fun () ->
+                    Expect.equal
+                        (ofFarkdownLineElement Line.ofFarkdownLine (
+                            url "http://example.com" "title" [
+                                img "http://example.com/image.jpg" "image" "image-alt"
+                            ]
+                        ))
+                        (LineKind.StringKind "<a href=\"http://example.com\" title=\"title\"><img src=\"http://example.com/image.jpg\" alt=\"image-alt\" title=\"image\" /></a>")
+                        ""
+                testCase "link with text" <| fun () ->
+                    Expect.equal
+                        (ofFarkdownLineElement Line.ofFarkdownLine (
+                            url "http://example.com" "title" [
+                                text "click me!"
+                            ]
+                        ))
+                        (LineKind.StringKind "<a href=\"http://example.com\" title=\"title\">click me!</a>")
+                        ""
+            ]
+
 [<Tests>]
 let toMermaidTest =
     testList "MarkdownCyoa.Core.Qsp.toQsp" [
