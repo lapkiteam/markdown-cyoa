@@ -9,6 +9,8 @@ type Action =
         Description: Line
     }
 
+type Main = Statement list
+
 type Paragraph =
     {
         Id: ParagraphId

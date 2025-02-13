@@ -52,6 +52,7 @@ NUGET
       YamlDotNet (>= 8.1.2)
     FUniversalParser (0.6.0)
       FSharpMyExt (>= 2.0.0-prerelease.4)
+    Qsp.FSharp.Core (0.1.0)
 
 GROUP Core
 STORAGE: NONE
@@ -79,6 +80,7 @@ NUGET
       YamlDotNet (>= 8.1.2)
     FUniversalParser (0.6.0)
       FSharpMyExt (>= 2.0.0-prerelease.4)
+    Qsp.FSharp.Core (0.1.0)
   remote: https://api.nuget.org/v3/index.json
     FParsec (1.1.1)
       FSharp.Core (>= 4.3.4)
@@ -150,3 +152,4 @@ NUGET
       YamlDotNet (>= 8.1.2)
     FUniversalParser (0.6.0)
       FSharpMyExt (>= 2.0.0-prerelease.4)
+    Qsp.FSharp.Core (0.1.0)

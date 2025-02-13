@@ -1,5 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <PackageID>MarkdownCyoa.Core</PackageID>
     <OutputType>Library</OutputType>
@@ -11,6 +10,7 @@
     <Compile Include="Parser/Paragraph.fs" />
     <Compile Include="Parser/Document.fs" />
     <Compile Include="Mermaid.fs" />
+    <Compile Include="Qsp.fs" />
   </ItemGroup>
   <Import Project="..\..\.paket\Paket.Restore.targets" />
 </Project>
