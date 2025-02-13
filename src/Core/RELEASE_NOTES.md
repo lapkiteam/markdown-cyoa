@@ -1,3 +1,8 @@
+## 0.2.0
+* feat(core): trim trailing `#` in `Action.Reference` (#18)
+* feat(core/qsp): make full a link description converter (#17)
+* feat(core): write a simple converter in QSP (#15)
+
 ## 0.1.0
 * feat(core): create the project
 * feat(core): write main types
