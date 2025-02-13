@@ -7,11 +7,13 @@ open FsharpMyExtension.ShowList
 
 [<RequireQualifiedAccess>]
 type ToMermaidCliArguments =
+    | [<AltCommandLine("-c")>] Clipboard
     | [<MainCommand; ExactlyOnce; Last>] Source_Path of path: string
     interface IArgParserTemplate with
         member s.Usage =
             match s with
             | Source_Path _ -> "path to a markdown cyoa document"
+            | Clipboard -> "output to clipboard"
 
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 [<RequireQualifiedAccess>]
@@ -33,7 +35,11 @@ module ToMermaidCliArguments =
         )
         |> function
             | Ok str ->
-                printfn "%s" str
+                match results.TryGetResult ToMermaidCliArguments.Clipboard with
+                | Some _ ->
+                    Clipboard.setText str
+                | None ->
+                    printfn "%s" str
                 0
             | Error errMsg ->
                 eprintfn "%s" errMsg
