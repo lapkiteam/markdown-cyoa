@@ -28,14 +28,23 @@ module ToMermaidCliArguments =
             |> joinEmpty "\n"
             |> show
         )
+        |> function
+            | Ok str ->
+                printfn "%s" str
+                0
+            | Error errMsg ->
+                eprintfn "%s" errMsg
+                1
 
 [<RequireQualifiedAccess>]
 type ToQspCliArguments =
+    | [<AltCommandLine("-c")>] Clipboard
     | [<MainCommand; ExactlyOnce; Last>] Source_Path of path: string
     interface IArgParserTemplate with
         member s.Usage =
             match s with
             | Source_Path _ -> "path to a markdown cyoa document or - from stdin"
+            | Clipboard -> "output to clipboard"
 
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 [<RequireQualifiedAccess>]
@@ -55,6 +64,17 @@ module ToQspCliArguments =
                 (IndentsOption.UsingSpaces 2)
                 FormatConfig.Default
         )
+        |> function
+            | Ok str ->
+                match results.TryGetResult ToQspCliArguments.Clipboard with
+                | Some _ ->
+                    Clipboard.setText str
+                | None ->
+                    printfn "%s" str
+                0
+            | Error errMsg ->
+                eprintfn "%s" errMsg
+                1
 
 [<RequireQualifiedAccess>]
 type CliArguments =
@@ -70,19 +90,11 @@ type CliArguments =
 [<RequireQualifiedAccess>]
 module CliArguments =
     let exec (results: ParseResults<CliArguments>) =
-        let result =
-            match results.GetSubCommand() with
-            | CliArguments.To_Mermaid results ->
-                ToMermaidCliArguments.exec results
-            | CliArguments.To_Qsp results ->
-                ToQspCliArguments.exec results
-        match result with
-        | Ok str ->
-            printfn "%s" str
-            0
-        | Error errMsg ->
-            eprintfn "%s" errMsg
-            1
+        match results.GetSubCommand() with
+        | CliArguments.To_Mermaid results ->
+            ToMermaidCliArguments.exec results
+        | CliArguments.To_Qsp results ->
+            ToQspCliArguments.exec results
 
 [<EntryPoint>]
 let main args =
