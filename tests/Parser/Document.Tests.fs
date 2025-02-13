@@ -26,11 +26,11 @@ let parseTest =
                         Actions = [
                             {
                                 Description = [ text "choice 1" ]
-                                Reference = "#first-paragraph"
+                                Reference = "first-paragraph"
                             }
                             {
                                 Description = [ text "choice 2" ]
-                                Reference = "#paragraph2"
+                                Reference = "paragraph2"
                             }
                         ]
                     }
