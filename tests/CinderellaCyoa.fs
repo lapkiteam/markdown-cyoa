@@ -41,15 +41,15 @@ let parsedBegin =
         Actions = [
             {
                 Description = [ text "Start sweeping the floors." ]
-                Reference = "#sweep-floors"
+                Reference = "sweep-floors"
             }
             {
                 Description = [ text "Begin mending the dresses." ]
-                Reference = "#mend-dresses"
+                Reference = "mend-dresses"
             }
             {
                 Description = [ text "Ask the mice for help." ]
-                Reference = "#ask-mice"
+                Reference = "ask-mice"
             }
         ]
     }
@@ -86,11 +86,11 @@ let parsedSweepFloors =
         ]
         Actions = [
             {
-                Reference = "#sew-button"
+                Reference = "sew-button"
                 Description = [text "Stop sweeping and sew the button back on."]
             }
             {
-                Reference = "#keep-sweeping"
+                Reference = "keep-sweeping"
                 Description = [text "Keep sweeping and deal with the button later."]
             }
         ]
@@ -129,15 +129,15 @@ let parsedMendDresses =
         ]
         Actions = [
             {
-                Reference = "#finish-mending"
+                Reference = "finish-mending"
                 Description = [text "Finish mending the dresses first."]
             }
             {
-                Reference = "#start-cleaning"
+                Reference = "start-cleaning"
                 Description = [text "Put the dresses aside and start cleaning."]
             }
             {
-                Reference = "#start-cleaning"
+                Reference = "start-cleaning"
                 Description = [text "Put the dresses aside and start dinner."]
             }
         ]

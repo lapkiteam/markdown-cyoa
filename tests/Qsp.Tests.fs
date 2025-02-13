@@ -56,9 +56,9 @@ let toMermaidTest =
                         "''"
                         "'**What should Cinderella do first?**'"
                         "''"
-                        "act 'Start sweeping the floors.': gt '#sweep-floors'"
-                        "act 'Begin mending the dresses.': gt '#mend-dresses'"
-                        "act 'Ask the mice for help.': gt '#ask-mice'"
+                        "act 'Start sweeping the floors.': gt 'sweep-floors'"
+                        "act 'Begin mending the dresses.': gt 'mend-dresses'"
+                        "act 'Ask the mice for help.': gt 'ask-mice'"
                         "--- begin ----------"
                     ]
 
@@ -72,8 +72,8 @@ let toMermaidTest =
                         "''"
                         "'**What should Cinderella do now?**'"
                         "''"
-                        "act 'Stop sweeping and sew the button back on.': gt '#sew-button'"
-                        "act 'Keep sweeping and deal with the button later.': gt '#keep-sweeping'"
+                        "act 'Stop sweeping and sew the button back on.': gt 'sew-button'"
+                        "act 'Keep sweeping and deal with the button later.': gt 'keep-sweeping'"
                         "--- sweep-floors ----------"
                     ]
                     String.concat System.Environment.NewLine [
@@ -86,9 +86,9 @@ let toMermaidTest =
                         "''"
                         "'**What should Cinderella do now?**'"
                         "''"
-                        "act 'Finish mending the dresses first.': gt '#finish-mending'"
-                        "act 'Put the dresses aside and start cleaning.': gt '#start-cleaning'"
-                        "act 'Put the dresses aside and start dinner.': gt '#start-cleaning'"
+                        "act 'Finish mending the dresses first.': gt 'finish-mending'"
+                        "act 'Put the dresses aside and start cleaning.': gt 'start-cleaning'"
+                        "act 'Put the dresses aside and start dinner.': gt 'start-cleaning'"
                         "--- mend-dresses ----------"
                     ]
                 ])
