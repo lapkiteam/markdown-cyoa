@@ -107,9 +107,8 @@ module Action =
             ]
         )
 
-let toQsp (markdownCyoaDocument: MarkdownCyoa.Core.Document): Document =
-    markdownCyoaDocument
-    |> List.map (fun paragraph ->
+module Paragraph =
+    let toQsp (paragraph: Paragraph) =
         let body: Statements =
             Main.toQspStatements paragraph.Main
         let actions: Statements =
@@ -121,4 +120,10 @@ let toQsp (markdownCyoaDocument: MarkdownCyoa.Core.Document): Document =
             yield! body
             yield! actions
         ]))
+
+let toQsp (markdownCyoaDocument: MarkdownCyoa.Core.Document): Document =
+    markdownCyoaDocument
+    |> List.collect (fun scene ->
+        scene.Body
+        |> List.map Paragraph.toQsp
     )

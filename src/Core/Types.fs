@@ -19,4 +19,21 @@ type Paragraph =
         Actions: Action list
     }
 
-type Document = Paragraph list
+type Scene =
+    {
+        Id: string
+        Title: Line
+        Body: Paragraph list
+    }
+
+[<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
+[<RequireQualifiedAccess>]
+module Scene =
+    let create id title body =
+        {
+            Id = id
+            Title = title
+            Body = body
+        }
+
+type Document = Scene list

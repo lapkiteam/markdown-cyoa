@@ -1,15 +1,13 @@
 module MarkdownCyoa.Core.Parser.Document
-open Farkdown.SyntaxTree
 
-let parse str =
-    let markdownDocument = Document.parse str
-    markdownDocument
+let parse str : Result<MarkdownCyoa.Core.Document, _> =
+    Farkdown.SyntaxTree.Document.parse str
     |> Result.map (fun statements ->
         statements
         |> List.choose (fun statement ->
             match statement with
-            | Statement.Header header ->
-                Paragraph.parse header
+            | Farkdown.SyntaxTree.Statement.Header header ->
+                Some (Scene.parse header)
             | _ ->
                 None
         )
