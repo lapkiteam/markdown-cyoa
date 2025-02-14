@@ -3,6 +3,12 @@ open Farkdown.Helpers
 
 open MarkdownCyoa.Core
 
+let rawChapterOne =
+    [
+        "# Chapter 1"
+    ]
+    |> String.concat "\n"
+
 let rawBegin =
     [
         "## Begin"
@@ -145,14 +151,17 @@ let parsedMendDresses =
 
 let rawAll =
     [
+        rawChapterOne
         rawBegin
         rawSweepFloors
         rawMendDresses
     ] |> String.concat "\n"
 
-let parsedAll =
+let parsedAll: MarkdownCyoa.Core.Document =
     [
-        parsedBegin
-        parsedSweepFloors
-        parsedMendDresses
+        Scene.create "chapter-1" [text "Chapter 1"]  [
+            parsedBegin
+            parsedSweepFloors
+            parsedMendDresses
+        ]
     ]

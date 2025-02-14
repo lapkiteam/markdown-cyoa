@@ -6,8 +6,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Types.fs" />
+    <Compile Include="Parser/ParagraphId.fs" />
     <Compile Include="Parser/Action.fs" />
     <Compile Include="Parser/Paragraph.fs" />
+    <Compile Include="Parser/Scene.fs" />
     <Compile Include="Parser/Document.fs" />
     <Compile Include="Mermaid.fs" />
     <Compile Include="Qsp.fs" />
