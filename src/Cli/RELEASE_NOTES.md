@@ -1,3 +1,6 @@
+## 0.3.0
+* feat(cli): update `Core` for `Scene` support
+
 ## 0.2.0
 * feat(cli/to-mermaid): make optionally output to the clipboard
 * feat(cli/to-mermaid): make optionally accept source from the stdin
