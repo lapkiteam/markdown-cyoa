@@ -101,9 +101,10 @@ module Action =
     let toQspAct (action: Action) =
         Statement.Act(
             [Expr.ofFarkdownLine action.Description], [
-                new NoEqualityPosition(Position.empty), Statement.Proc("gt", [
+                PosStatement.createSimple (Statement.Proc("gt", [
+                    Expr.Var (VarType.StringType, "curLoc")
                     Expr.createSimpleString action.Reference
-                ])
+                ]))
             ]
         )
 
@@ -114,16 +115,47 @@ module Paragraph =
         let actions: Statements =
             paragraph.Actions
             |> List.map (fun action ->
-                new NoEqualityPosition(Position.empty), Action.toQspAct action
+                PosStatement.createSimple (Action.toQspAct action)
             )
-        DocumentElement.Location(Location.Location (paragraph.Id, [
+        [
             yield! body
             yield! actions
-        ]))
+        ]
 
 let toQsp (markdownCyoaDocument: MarkdownCyoa.Core.Document): Document =
     markdownCyoaDocument
-    |> List.collect (fun scene ->
-        scene.Body
-        |> List.map Paragraph.toQsp
+    |> List.map (fun scene ->
+        match scene.Body with
+        | [singleParagraph] ->
+            DocumentElement.Location(
+                Location.Location (
+                    scene.Id,
+                    Paragraph.toQsp singleParagraph
+                )
+            )
+        | paragraphs ->
+            let body =
+                List.foldBack
+                    (fun (paragraph: Paragraph) state ->
+                        let expr =
+                            // $args[0] = paragraph.Id
+                            Expr.Expr(
+                                Op.Eq,
+                                Expr.Arr(
+                                    (VarType.StringType, "args"),
+                                    [Expr.Val (Value.Int 0)]
+                                ),
+                                Expr.createSimpleString paragraph.Id
+                            )
+                        [PosStatement.createSimple (Qsp.Ast.If(
+                            expr,
+                            Paragraph.toQsp paragraph,
+                            state
+                        ))]
+                    )
+                    paragraphs
+                    []
+            DocumentElement.Location(
+                Location.Location (scene.Id, body)
+            )
     )
