@@ -98,24 +98,29 @@ module Main =
         List.collect Statement.ofFarkdownStatement main
 
 module Action =
-    let toQspAct (action: Action) =
+    let toQspAct (optionalSceneId: ParagraphId option) (action: Action) =
         Statement.Act(
             [Expr.ofFarkdownLine action.Description], [
                 PosStatement.createSimple (Statement.Proc("gt", [
                     Expr.Var (VarType.StringType, "curLoc")
+
+                    match optionalSceneId with
+                    | Some sceneId -> Expr.createSimpleString sceneId
+                    | None -> ()
+
                     Expr.createSimpleString action.Reference
                 ]))
             ]
         )
 
 module Paragraph =
-    let toQsp (paragraph: Paragraph) =
+    let toQsp optionalSceneId (paragraph: Paragraph) =
         let body: Statements =
             Main.toQspStatements paragraph.Main
         let actions: Statements =
             paragraph.Actions
             |> List.map (fun action ->
-                PosStatement.createSimple (Action.toQspAct action)
+                PosStatement.createSimple (Action.toQspAct optionalSceneId action)
             )
         [
             yield! body
@@ -124,43 +129,57 @@ module Paragraph =
 
 module Scene =
     let toQsp (scene: Scene) =
-        match scene.Body with
-        | [singleParagraph] ->
-            DocumentElement.Location(
-                Location.Location (
-                    scene.Id,
-                    Paragraph.toQsp singleParagraph
-                )
-            )
-        | paragraphs ->
-            let body =
-                List.foldBack
-                    (fun (paragraph: Paragraph) state ->
-                        let expr =
-                            // $args[0] = paragraph.Id
-                            Expr.Expr(
-                                Op.Eq,
-                                Expr.Arr(
-                                    (VarType.StringType, "args"),
-                                    [Expr.Val (Value.Int 0)]
-                                ),
-                                Expr.createSimpleString paragraph.Id
-                            )
-                        [PosStatement.createSimple (Qsp.Ast.If(
-                            expr,
-                            Paragraph.toQsp paragraph,
-                            state
-                        ))]
+        List.foldBack
+            (fun (paragraph: Paragraph) state ->
+                let expr =
+                    // $args[1] = paragraph.Id
+                    Expr.Expr(
+                        Op.Eq,
+                        Expr.Arr(
+                            (VarType.StringType, "args"),
+                            [Expr.Val (Value.Int 1)]
+                        ),
+                        Expr.createSimpleString paragraph.Id
                     )
-                    paragraphs
-                    []
-            DocumentElement.Location(
-                Location.Location (scene.Id, body)
+                [PosStatement.createSimple (Qsp.Ast.If(
+                    expr,
+                    Paragraph.toQsp (Some scene.Id) paragraph,
+                    state
+                ))]
             )
+            scene.Body
+            []
+
+module Location =
+    let toQsp (location: MarkdownCyoa.Core.Location) =
+        let body =
+            List.foldBack
+                (fun (scene: Scene) state ->
+                    let expr =
+                        // $args[0] = scene.Id
+                        Expr.Expr(
+                            Op.Eq,
+                            Expr.Arr(
+                                (VarType.StringType, "args"),
+                                [Expr.Val (Value.Int 0)]
+                            ),
+                            Expr.createSimpleString scene.Id
+                        )
+                    [PosStatement.createSimple (Qsp.Ast.If(
+                        expr,
+                        Scene.toQsp scene,
+                        state
+                    ))]
+                )
+                location.Body
+                []
+
+        DocumentElement.Location(
+            Location.Location (
+                location.Id, body
+            )
+        )
 
 let toQsp (markdownCyoaDocument: MarkdownCyoa.Core.Document): Document =
     markdownCyoaDocument
-    |> List.collect (fun location ->
-        location.Body
-        |> List.map Scene.toQsp
-    )
+    |> List.map Location.toQsp
