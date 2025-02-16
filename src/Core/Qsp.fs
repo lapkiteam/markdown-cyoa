@@ -122,9 +122,8 @@ module Paragraph =
             yield! actions
         ]
 
-let toQsp (markdownCyoaDocument: MarkdownCyoa.Core.Document): Document =
-    markdownCyoaDocument
-    |> List.map (fun scene ->
+module Scene =
+    let toQsp (scene: Scene) =
         match scene.Body with
         | [singleParagraph] ->
             DocumentElement.Location(
@@ -158,4 +157,10 @@ let toQsp (markdownCyoaDocument: MarkdownCyoa.Core.Document): Document =
             DocumentElement.Location(
                 Location.Location (scene.Id, body)
             )
+
+let toQsp (markdownCyoaDocument: MarkdownCyoa.Core.Document): Document =
+    markdownCyoaDocument
+    |> List.collect (fun location ->
+        location.Body
+        |> List.map Scene.toQsp
     )

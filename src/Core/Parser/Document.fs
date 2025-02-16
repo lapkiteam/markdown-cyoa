@@ -7,7 +7,7 @@ let parse str : Result<MarkdownCyoa.Core.Document, _> =
         |> List.choose (fun statement ->
             match statement with
             | Farkdown.SyntaxTree.Statement.Header header ->
-                Some (Scene.parse header)
+                Some (Location.parse header)
             | _ ->
                 None
         )

@@ -36,4 +36,21 @@ module Scene =
             Body = body
         }
 
-type Document = Scene list
+type Location =
+    {
+        Id: string
+        Title: Line
+        Body: Scene list
+    }
+
+[<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
+[<RequireQualifiedAccess>]
+module Location =
+    let create id title body =
+        {
+            Id = id
+            Title = title
+            Body = body
+        }
+
+type Document = Location list

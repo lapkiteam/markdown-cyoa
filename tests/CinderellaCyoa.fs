@@ -3,15 +3,21 @@ open Farkdown.Helpers
 
 open MarkdownCyoa.Core
 
+let rawLocationOne =
+    [
+        "# Location 1"
+    ]
+    |> String.concat "\n"
+
 let rawChapterOne =
     [
-        "# Chapter 1"
+        "## Chapter 1"
     ]
     |> String.concat "\n"
 
 let rawBegin =
     [
-        "## Begin"
+        "### Begin"
         ""
         "Cinderella stood in the kitchen, her heart heavy with longing. The royal ball was tonight, and she desperately wanted to go. But her stepmother had left her with a mountain of chores. \"If you finish everything by sunset,\" her stepmother had sneered, \"you may go.\""
         ""
@@ -62,7 +68,7 @@ let parsedBegin =
 
 let rawSweepFloors =
     [
-        "## Sweep Floors"
+        "### Sweep Floors"
         ""
         "Cinderella grabbed her broom and began sweeping the dusty floors. As she worked, she hummed a tune to keep her spirits up."
         ""
@@ -104,7 +110,7 @@ let parsedSweepFloors =
 
 let rawMendDresses =
     [
-        "## Mend Dresses"
+        "### Mend Dresses"
         ""
         "Cinderella sat down with the torn dresses and began stitching. Her fingers moved quickly, but there were so many rips and tears."
         ""
@@ -151,6 +157,7 @@ let parsedMendDresses =
 
 let rawAll =
     [
+        rawLocationOne
         rawChapterOne
         rawBegin
         rawSweepFloors
@@ -159,9 +166,11 @@ let rawAll =
 
 let parsedAll: MarkdownCyoa.Core.Document =
     [
-        Scene.create "chapter-1" [text "Chapter 1"]  [
-            parsedBegin
-            parsedSweepFloors
-            parsedMendDresses
+        Location.create "location-1" [text "Location 1"] [
+            Scene.create "chapter-1" [text "Chapter 1"]  [
+                parsedBegin
+                parsedSweepFloors
+                parsedMendDresses
+            ]
         ]
     ]
