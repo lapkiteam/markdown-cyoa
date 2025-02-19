@@ -6,6 +6,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="CinderellaCyoa.fs" />
+    <Compile Include="Parser/ParagraphId.Tests.fs" />
     <Compile Include="Parser/Action.Tests.fs" />
     <Compile Include="Parser/Paragraph.Tests.fs" />
     <Compile Include="Parser/Document.Tests.fs" />

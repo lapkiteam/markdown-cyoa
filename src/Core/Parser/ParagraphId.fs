@@ -6,9 +6,11 @@ let parse (headerTitle: Line) =
     |> List.map (
         let prepareString (str: string) =
             str
-            |> String.map (function
-                | ' ' -> '-'
-                | c -> System.Char.ToLower c
+            |> String.collect (function
+                | ' ' -> "-"
+                | ',' -> ""
+                | c ->
+                    sprintf "%c" (System.Char.ToLower c)
             )
         let rec linear = function
             | LineElement.Text text ->
